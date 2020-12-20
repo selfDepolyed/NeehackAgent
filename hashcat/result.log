@@ -1,0 +1,57 @@
+hashcat (v6.1.1) starting...
+
+* Device #1: CUDA SDK Toolkit installation NOT detected.
+             CUDA SDK Toolkit installation required for proper device support and utilization
+             Falling back to OpenCL Runtime
+
+* Device #1: WARNING! Kernel exec timeout is not disabled.
+             This may cause "CL_OUT_OF_RESOURCES" or related errors.
+             To disable the timeout, see: https://hashcat.net/q/timeoutpatch
+OpenCL API (OpenCL 1.2 CUDA 11.2.66) - Platform #1 [NVIDIA Corporation]
+=======================================================================
+* Device #1: GeForce GTX 1080 Ti, 9664/11264 MB (2816 MB allocatable), 28MCU
+
+Minimum password length supported by kernel: 0
+Maximum password length supported by kernel: 256
+
+Sorting hashes...                 Sorted hashes...                Removing duplicate hashes...                            Removed duplicate hashes...                           Sorting salts...                Sorted salts...               Comparing hashes with potfile entries...                                        Compared hashes with potfile entries...                                       Generating bitmap tables...                           Generated bitmap tables...                          Hashes: 1 digests; 1 unique digests, 1 unique salts
+Bitmaps: 16 bits, 65536 entries, 0x0000ffff mask, 262144 bytes, 5/13 rotates
+
+Applicable optimizers applied:
+* Zero-Byte
+* Early-Skip
+* Not-Salted
+* Not-Iterated
+* Single-Hash
+* Single-Salt
+* Brute-Force
+* Raw-Hash
+
+ATTENTION! Pure (unoptimized) backend kernels selected.
+Using pure kernels enables cracking longer passwords but for the price of drastically reduced performance.
+If you want to switch to optimized backend kernels, append -O to your commandline.
+See the above message to find out about the exact limits.
+
+Watchdog: Temperature abort trigger set to 90c
+
+Initializing device kernels and memory...                                         Initializing backend runtime for device #1...                                             Initialized backend runtime for device #1...                                            Host memory required for this attack: 555 MB
+
+Initialized device kernels and memory...                                        [s]tatus [p]ause [b]ypass [c]heckpoint [q]uit =>                                                  Driver temperature threshold met on GPU #1. Expect reduced performance.
+[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit =>                                                  Driver temperature threshold met on GPU #1. Expect reduced performance.
+[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit =>                                                  Driver temperature threshold met on GPU #1. Expect reduced performance.
+
+[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit =>                                                  Cracking performance lower than expected?
+
+* Append -O to the commandline.
+  This lowers the maximum supported password- and salt-length (typically down to 32).
+
+* Append -w 3 to the commandline.
+  This can cause your screen to lag.
+
+* Update your backend API runtime / driver the right way:
+  https://hashcat.net/faq/wrongdriver
+
+* Create more work items to make use of your parallelization power:
+  https://hashcat.net/faq/morework
+
+[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit => 

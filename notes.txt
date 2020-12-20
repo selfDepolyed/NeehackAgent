@@ -1,0 +1,199 @@
+F:\D_Data\neehackAgent\venv\Scripts\python.exe F:/D_Data/neehackAgent/main.py
+[+] Decrypting Hash
+{"hash": "81dc9bdb52d04dc20036dbd8313ed055", "command": "hashcat.exe -a 3 -m 0 81dc9bdb52d04dc20036dbd8313ed055"}
+[+] Hash Cracked!
+hashcat (v6.1.1) starting...
+
+* Device #1: CUDA SDK Toolkit installation NOT detected.
+             CUDA SDK Toolkit installation required for proper device support and utilization
+             Falling back to OpenCL Runtime
+
+* Device #1: WARNING! Kernel exec timeout is not disabled.
+             This may cause "CL_OUT_OF_RESOURCES" or related errors.
+             To disable the timeout, see: https://hashcat.net/q/timeoutpatch
+OpenCL API (OpenCL 1.2 CUDA 11.1.70) - Platform #1 [NVIDIA Corporation]
+=======================================================================
+* Device #1: GeForce GTX 1660 Ti, 4992/6144 MB (1536 MB allocatable), 24MCU
+
+Minimum password length supported by kernel: 0
+Maximum password length supported by kernel: 256
+
+Sorting hashes...
+
+Sorted hashes...
+
+Removing duplicate hashes...
+
+Removed duplicate hashes...
+
+Sorting salts...
+
+Sorted salts...
+
+Comparing hashes with potfile entries...
+
+Compared hashes with potfile entries...
+
+Generating bitmap tables...
+
+Generated bitmap tables...
+
+Hashes: 1 digests; 1 unique digests, 1 unique salts
+Bitmaps: 16 bits, 65536 entries, 0x0000ffff mask, 262144 bytes, 5/13 rotates
+
+Applicable optimizers applied:
+* Zero-Byte
+* Early-Skip
+* Not-Salted
+* Not-Iterated
+* Single-Hash
+* Single-Salt
+* Brute-Force
+* Raw-Hash
+
+ATTENTION! Pure (unoptimized) backend kernels selected.
+Using pure kernels enables cracking longer passwords but for the price of drastically reduced performance.
+If you want to switch to optimized backend kernels, append -O to your commandline.
+See the above message to find out about the exact limits.
+
+Watchdog: Temperature abort trigger set to 90c
+
+Initializing device kernels and memory...
+
+Initializing backend runtime for device #1...
+
+Initialized backend runtime for device #1...
+
+Host memory required for this attack: 485 MB
+
+Initialized device kernels and memory...
+
+The wordlist or mask that you are using is too small.
+This means that hashcat cannot use the full parallel power of your device(s).
+Unless you supply more work, your cracking speed will drop.
+For tips on supplying more work, see: https://hashcat.net/faq/morework
+
+[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit =>
+
+Approaching final keyspace - workload adjusted.
+
+[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit =>
+
+Session..........: hashcat
+Status...........: Exhausted
+Hash.Name........: MD5
+Hash.Target......: 81dc9bdb52d04dc20036dbd8313ed055
+Time.Started.....: Tue Dec 08 20:52:26 2020 (0 secs)
+Time.Estimated...: Tue Dec 08 20:52:26 2020 (0 secs)
+Guess.Mask.......: ?1 [1]
+Guess.Charset....: -1 ?l?d?u, -2 ?l?d, -3 ?l?d*!$@_, -4 Undefined
+Guess.Queue......: 1/15 (6.67%)
+Speed.#1.........:   177.7 kH/s (0.05ms) @ Accel:64 Loops:62 Thr:1024 Vec:1
+Recovered........: 0/1 (0.00%) Digests
+Progress.........: 62/62 (100.00%)
+Rejected.........: 0/62 (0.00%)
+Restore.Point....: 1/1 (100.00%)
+Restore.Sub.#1...: Salt:0 Amplifier:0-62 Iteration:0-62
+Candidates.#1....: s -> X
+Hardware.Mon.#1..: Temp: 47c Fan: 23% Util: 16% Core:1800MHz Mem:5750MHz Bus:16
+
+The wordlist or mask that you are using is too small.
+This means that hashcat cannot use the full parallel power of your device(s).
+Unless you supply more work, your cracking speed will drop.
+For tips on supplying more work, see: https://hashcat.net/faq/morework
+
+[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit =>
+
+Approaching final keyspace - workload adjusted.
+
+[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit =>
+
+Session..........: hashcat
+Status...........: Exhausted
+Hash.Name........: MD5
+Hash.Target......: 81dc9bdb52d04dc20036dbd8313ed055
+Time.Started.....: Tue Dec 08 20:52:26 2020 (0 secs)
+Time.Estimated...: Tue Dec 08 20:52:26 2020 (0 secs)
+Guess.Mask.......: ?1?2 [2]
+Guess.Charset....: -1 ?l?d?u, -2 ?l?d, -3 ?l?d*!$@_, -4 Undefined
+Guess.Queue......: 2/15 (13.33%)
+Speed.#1.........:  7010.1 kH/s (0.05ms) @ Accel:64 Loops:62 Thr:1024 Vec:1
+Recovered........: 0/1 (0.00%) Digests
+Progress.........: 2232/2232 (100.00%)
+Rejected.........: 0/2232 (0.00%)
+Restore.Point....: 36/36 (100.00%)
+Restore.Sub.#1...: Salt:0 Amplifier:0-62 Iteration:0-62
+Candidates.#1....: sa -> Xq
+Hardware.Mon.#1..: Temp: 49c Fan: 23% Util: 16% Core:1950MHz Mem:5750MHz Bus:16
+
+The wordlist or mask that you are using is too small.
+This means that hashcat cannot use the full parallel power of your device(s).
+Unless you supply more work, your cracking speed will drop.
+For tips on supplying more work, see: https://hashcat.net/faq/morework
+
+[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit =>
+
+Approaching final keyspace - workload adjusted.
+
+[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit =>
+
+Session..........: hashcat
+Status...........: Exhausted
+Hash.Name........: MD5
+Hash.Target......: 81dc9bdb52d04dc20036dbd8313ed055
+Time.Started.....: Tue Dec 08 20:52:26 2020 (0 secs)
+Time.Estimated...: Tue Dec 08 20:52:26 2020 (0 secs)
+Guess.Mask.......: ?1?2?2 [3]
+Guess.Charset....: -1 ?l?d?u, -2 ?l?d, -3 ?l?d*!$@_, -4 Undefined
+Guess.Queue......: 3/15 (20.00%)
+Speed.#1.........:   251.3 MH/s (0.05ms) @ Accel:64 Loops:62 Thr:1024 Vec:1
+Recovered........: 0/1 (0.00%) Digests
+Progress.........: 80352/80352 (100.00%)
+Rejected.........: 0/80352 (0.00%)
+Restore.Point....: 1296/1296 (100.00%)
+Restore.Sub.#1...: Salt:0 Amplifier:0-62 Iteration:0-62
+Candidates.#1....: sar -> Xqx
+Hardware.Mon.#1..: Temp: 51c Fan: 23% Util: 16% Core:1935MHz Mem:5750MHz Bus:16
+
+The wordlist or mask that you are using is too small.
+This means that hashcat cannot use the full parallel power of your device(s).
+Unless you supply more work, your cracking speed will drop.
+For tips on supplying more work, see: https://hashcat.net/faq/morework
+
+[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit =>
+
+Approaching final keyspace - workload adjusted.
+
+[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit =>
+
+81dc9bdb52d04dc20036dbd8313ed055:1234
+
+
+
+Session..........: hashcat
+Status...........: Cracked
+Hash.Name........: MD5
+Hash.Target......: 81dc9bdb52d04dc20036dbd8313ed055
+Time.Started.....: Tue Dec 08 20:52:26 2020 (0 secs)
+Time.Estimated...: Tue Dec 08 20:52:26 2020 (0 secs)
+Guess.Mask.......: ?1?2?2?2 [4]
+Guess.Charset....: -1 ?l?d?u, -2 ?l?d, -3 ?l?d*!$@_, -4 Undefined
+Guess.Queue......: 4/15 (26.67%)
+Speed.#1.........:  2753.4 MH/s (0.40ms) @ Accel:64 Loops:62 Thr:1024 Vec:1
+Recovered........: 1/1 (100.00%) Digests
+Progress.........: 2892672/2892672 (100.00%)
+Rejected.........: 0/2892672 (0.00%)
+Restore.Point....: 0/46656 (0.00%)
+Restore.Sub.#1...: Salt:0 Amplifier:0-62 Iteration:0-62
+Candidates.#1....: sari -> Xqxv
+Hardware.Mon.#1..: Temp: 52c Fan: 23% Util: 38% Core:1950MHz Mem:5750MHz Bus:16
+
+Started: Tue Dec 08 20:52:24 2020
+
+
+Stopped: Tue Dec 08 20:52:27 2020
+
+b'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'
+{"status": "crack", "action": "b'c2MAAubhWDq+ipap2By4kvdOXRc6wK02TTQu65RS1S+0XTxtiZJT79ncjeBPpdFmGD1KZJadWG7FVl+iu0zq2Desq5XJHtqb5/XK+7IZSVmuOWaMXu6rhRCPlHGloY31moUbD7dMyXm+bcfnprA07VU1RNlt98022AU3rS8DRaU0yUcku9bQQel0f4xWS46LmQe1tJocf0VLKVgs1BrbU0/UP3Dkum5PYK+HnXAK3jB89TzOMw=='"}
+
+Process finished with exit code 0

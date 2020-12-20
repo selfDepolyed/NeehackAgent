@@ -1,0 +1,10 @@
+Metadata-Version: 2.1
+Name: ry
+Version: 0.0.0
+Summary: 
+Author: ryan
+Author-email: ryan?@gmail.com
+Requires-Python: >=3.6.1,<4.0.0
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
