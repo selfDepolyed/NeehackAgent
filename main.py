@@ -6,6 +6,10 @@ import base64
 import os
 import time
 import threading
+from pathlib import Path
+
+
+GlobalAstatus = "Available"
 
 def LastNlines(fname, N):
     lines = ""
@@ -19,26 +23,38 @@ def LastNlines(fname, N):
     return lines
 
 
-def executeHascat(command):
-    status = os.popen("cd hashcat & " + command).read()
-    print("[+] Password recovery completed")
-    return status
+def executeHascat(command, AgentID):
+    os.popen("cd hashcat & " + command).read()
+    exit(1)
+
+def hashcatError(AgentID, report):
+    url = serverIP + "api?call=crack"
+    data = {
+        "status": "Unable",
+        "agentid": AgentID,
+        "report": report
+    }
+    global GlobalAstatus
+    GlobalAstatus = "Unable"
+    r = requests.post(url=url, data=data)
+    print(r.text)
+
+    exit(1)
 
 
 def AgentStatus(AgentID):
     url = serverIP + "api?call=crack"
     hash = ""
+    wasCracking = False
     while(True):
         print("[+] Status: Standby")
-        time.sleep(6)
-        if (threading.active_count() < 2):
-
+        time.sleep(60)
+        if (threading.active_count() < 2 and wasCracking == False):
             data = {
-                "status": "Available",
+                "status": GlobalAstatus,
                 "agentid": AgentID
             }
             r = requests.post(url=url, data=data)
-            print(r.text)
             jsonData = json.loads(r.text)
 
             for key, value in jsonData.items():
@@ -52,40 +68,88 @@ def AgentStatus(AgentID):
                     try:
                         decryptData = simplecrypt.decrypt(AgentID, actionb64Decode).decode('utf-8')
                         jsonData = json.loads(decryptData)
-                        if(jsonData['command'][:7] == "hashcat"):
+                        if(jsonData['attacktype'] == "dictionary" and jsonData['command'] != None):
+                            print("Dictionary Attack")
+                            command = jsonData['command']
+                            for root, dirs, files in os.walk("wordlists"):
+                                for name in files:
+                                    if name.endswith(".txt"):
+                                        command = command+" ..\\"+os.path.join(root,name)
+                            command = command+" > result.log"
+                            t = threading.Thread(target=executeHascat, name="Recovering hash",
+                                                 args=(command, AgentID,))
+
+                            hash = jsonData['hash']
+                            t.daemon = True
+                            t.start()
+                            wasCracking = True
+                        elif(jsonData['attacktype'] == "bruteforce" and jsonData['command'] != None):
                             print("[+] Recovering password")
-                            t = threading.Thread(target=executeHascat, name="Recovering hash", args=(jsonData['command'],))
+                            t = threading.Thread(target=executeHascat, name="Recovering hash", args=(jsonData['command'],AgentID,))
+
                             hash = jsonData['hash']
                             t.daemon = True
                             t.start()
                             status = ""
+
                             #lines = LastNlines("result.log", 50)
 
                             if("Status...........: Cracked" in status):
                                 encryptedLog = simplecrypt.encrypt(AgentID, status)
                                 encryptedB64 = base64.b64encode(encryptedLog)
                                 data = {
-                                    "status": "Available",
+                                    "status": GlobalAstatus,
                                     "agentid": AgentID,
                                     "log": encryptedB64,
                                     "hash": jsonData['hash']
                                 }
                                 r = requests.post(url=url, data=data)
-                            os.system("del hashcat\\hashcat.potfile")
+
                     except simplecrypt.DecryptionException:
                         print("Bad Agent")
         else:
-            print("[+] Updating status")
-            url = serverIP + "api?call=crack&status=busy"
-            data = {
-                "status": "Busy",
-                "agentid": AgentID,
-                "hash": hash
-            }
-            r = requests.post(url=url, data=data)
-            lines = LastNlines("result.log", 10)
-            print(lines)
+            if(wasCracking):
+                CrackResult(AgentID, hash, url)
+                wasCracking = False
+            else:
+                print("[+] Updating status")
+                url = serverIP + "api?call=crack&status=busy"
+                data = {
+                    "status": "Busy",
+                    "agentid": AgentID,
+                    "hash": hash
+                }
+                r = requests.post(url=url, data=data)
+                lines = LastNlines("result.log", 10)
+                print(lines)
 
+
+def CrackResult(AgentID, hash, url):
+    potFile = Path("hashcat/hashcat.potfile")
+    if potFile.is_file():
+        os.remove(potFile)
+    try:
+        f = open("hashcat/result.log", "r")
+        try:
+            if "[s]tatus [p]ause [b]ypass" in f.read():
+                f.close()
+                lines = LastNlines("hashcat/result.log", 50)
+                encryptedLog = simplecrypt.encrypt(AgentID, lines)
+                encryptedB64 = base64.b64encode(encryptedLog)
+                data = {
+                    "status": GlobalAstatus,
+                    "agentid": AgentID,
+                    "log": encryptedB64,
+                    "hash": hash
+                }
+                r = requests.post(url=url, data=data)
+            else:
+                print("Error")
+                hashcatError(AgentID, f.read())
+        finally:
+            f.close()
+    except IOError:
+        print("In Progress")
 
 def main():
     reg = Reg()
