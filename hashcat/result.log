@@ -37,36 +37,29 @@ Watchdog: Temperature abort trigger set to 90c
 Initializing device kernels and memory...                                         Initializing backend runtime for device #1...                                             Initialized backend runtime for device #1...                                            Host memory required for this attack: 555 MB
 
 Initialized device kernels and memory...                                        Dictionary cache hit:
-* Filename..: ..\wordlists\wordlist1.txt
-* Passwords.: 6
-* Bytes.....: 61
-* Keyspace..: 6
+* Filename..: ..\wordlists\masterList.txt
+* Passwords.: 51380603
+* Bytes.....: 695032428
+* Keyspace..: 51380603
 
-The wordlist or mask that you are using is too small.
-This means that hashcat cannot use the full parallel power of your device(s).
-Unless you supply more work, your cracking speed will drop.
-For tips on supplying more work, see: https://hashcat.net/faq/morework
-
-[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit =>                                                  Approaching final keyspace - workload adjusted.
-
-[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit =>                                                  81dc9bdb52d04dc20036dbd8313ed055:1234
+[s]tatus [p]ause [b]ypass [c]heckpoint [q]uit =>                                                  2b0cf9520521ebe2b9c24fd0449d0ad7:daughter
                                                  
 Session..........: hashcat
 Status...........: Cracked
 Hash.Name........: MD5
-Hash.Target......: 81dc9bdb52d04dc20036dbd8313ed055
-Time.Started.....: Sun Dec 27 13:19:56 2020 (0 secs)
-Time.Estimated...: Sun Dec 27 13:19:56 2020 (0 secs)
-Guess.Base.......: File (..\wordlists\wordlist1.txt)
+Hash.Target......: 2b0cf9520521ebe2b9c24fd0449d0ad7
+Time.Started.....: Mon Dec 28 21:34:05 2020 (0 secs)
+Time.Estimated...: Mon Dec 28 21:34:05 2020 (0 secs)
+Guess.Base.......: File (..\wordlists\masterList.txt)
 Guess.Queue......: 1/1 (100.00%)
-Speed.#1.........:     7179 H/s (0.01ms) @ Accel:512 Loops:1 Thr:64 Vec:1
+Speed.#1.........: 30928.3 kH/s (10.47ms) @ Accel:1024 Loops:1 Thr:64 Vec:1
 Recovered........: 1/1 (100.00%) Digests
-Progress.........: 6/6 (100.00%)
-Rejected.........: 0/6 (0.00%)
-Restore.Point....: 0/6 (0.00%)
+Progress.........: 1835008/51380603 (3.57%)
+Rejected.........: 0/1835008 (0.00%)
+Restore.Point....: 0/51380603 (0.00%)
 Restore.Sub.#1...: Salt:0 Amplifier:0-1 Iteration:0-1
-Candidates.#1....: abc -> 1234
-Hardware.Mon.#1..: Temp: 58c Fan: 26% Util: 81% Core:1632MHz Mem:5005MHz Bus:16
+Candidates.#1....: 123456 -> therris8
+Hardware.Mon.#1..: Temp: 64c Fan: 30% Util: 28% Core:1582MHz Mem:5005MHz Bus:16
 
-Started: Sun Dec 27 13:19:54 2020
-                                  Stopped: Sun Dec 27 13:19:57 2020
+Started: Mon Dec 28 21:34:03 2020
+                                  Stopped: Mon Dec 28 21:34:06 2020
